@@ -5,25 +5,43 @@ function htmlToElement(html) {
     return template.content.firstChild;
 }
 
-function createTextarea(id, className) {
-    return htmlToElement(`<textarea id="${id}" name="${id}" class="${className}"></textarea>`);
+function createTextarea(id, className, value = "") {
+    return htmlToElement(`<textarea id="${id}" name="${id}" class="${className}">${value}</textarea>`);
+}
+
+function updateUrlParam(key, value) {
+    if (history.pushState) {
+        const newurl = new URL(window.location.href);
+        newurl.searchParams.set(key, value);
+        window.history.pushState({ path: newurl.href }, '', newurl.href);
+    }
+}
+
+function setupTextareaEvents() {
+    for (let i = 1; i <= 4; i++) {
+        const textarea = document.getElementById(`input${i}1`);
+        textarea.addEventListener('input', function () {
+            updateUrlParam(`input${i}`, encodeURIComponent(this.value));
+        });
+    }
 }
 
 window.onload = function () {
     const formContainer = document.getElementById('formContainer');
     const summaryContainer = document.getElementById('summaryContainer');
+    const queryParams = new URLSearchParams(window.location.search);
 
     for (let i = 1; i <= 4; i++) {
-        // Create and append textareas for input
-        const textareaInput = createTextarea('input' + i + '1', 'textarea-large');
-        formContainer.appendChild(textareaInput); // Changed from prepend to append
+        const inputValue = queryParams.get(`input${i}`) ? decodeURIComponent(queryParams.get(`input${i}`)) : "";
+        const textareaInput = createTextarea(`input${i}1`, 'textarea-large', inputValue);
+        formContainer.appendChild(textareaInput);
 
-        // Create and append textareas for summary
-        const textareaSummary = createTextarea('summary' + i, 'textarea-small');
+        const textareaSummary = createTextarea(`summary${i}`, 'textarea-small');
         summaryContainer.appendChild(textareaSummary);
     }
 
-    // Create and append the submit button at the end
+    setupTextareaEvents();
+
     const submitButton = htmlToElement('<input type="button" value="Submit" id="submitButton" onclick="submitForm()">');
     formContainer.appendChild(submitButton);
 }
