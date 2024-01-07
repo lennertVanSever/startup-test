@@ -4,29 +4,37 @@
 <head>
     <title>Large Input Form</title>
     <style>
-        .textarea-container {
+        .container {
             display: flex;
+        }
+
+        form {
+            width: calc(60% - 15px);
+            margin-right: 15px;
+        }
+
+        #summaryContainer {
+            width: calc(40% - 5px);
+            margin-right: 5px;
+        }
+
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
             margin-bottom: 10px;
-        }
-
-        .textarea-large {
-            width: 60%;
-            min-height: 100px;
-            margin-right: 10px;
-        }
-
-        .textarea-small {
-            width: 40%;
-            min-height: 100px;
         }
     </style>
 </head>
 
 <body>
     <h2>Large Input Form</h2>
-    <form action="/submit" method="post" id="formContainer">
-        <input type="submit" value="Submit">
-    </form>
+    <div class="container">
+        <form action="/submit" method="post" id="formContainer">
+            <input type="submit" value="Submit">
+        </form>
+        <div id="summaryContainer"></div>
+    </div>
 
     <script>
         function htmlToElement(html) {
@@ -36,20 +44,24 @@
             return template.content.firstChild;
         }
 
-        function createTextareaPair(id) {
-            return htmlToElement(`
-                <div class="textarea-container">
-                    <textarea id="${id}1" name="${id}1" class="textarea-large"></textarea>
-                    <textarea id="${id}2" name="${id}2" class="textarea-small"></textarea>
-                </div>
-            `);
+        function createTextarea(id, className) {
+            return htmlToElement(`<textarea id="${id}" name="${id}" class="${className}"></textarea>`);
         }
 
         window.onload = function () {
             const formContainer = document.getElementById('formContainer');
+            const summaryContainer = document.getElementById('summaryContainer');
+
             for (let i = 1; i <= 4; i++) {
-                const textareaPair = createTextareaPair('input' + i);
-                formContainer.insertBefore(textareaPair, formContainer.lastElementChild);
+                const textareaLarge = createTextarea('input' + i + '1', 'textarea-large');
+                const textareaSmall = createTextarea('input' + i + '2', 'textarea-small');
+
+                const container = document.createElement('div');
+                container.className = 'textarea-container';
+                container.appendChild(textareaLarge);
+                formContainer.insertBefore(container, formContainer.lastElementChild);
+
+                summaryContainer.appendChild(textareaSmall);
             }
         }
     </script>
