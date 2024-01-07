@@ -1,0 +1,19 @@
+.container {
+    display: flex;
+}
+
+form {
+    width: calc(60% - 15px);
+    margin-right: 15px;
+}
+
+#summaryContainer {
+    width: calc(40% - 5px);
+    margin-right: 5px;
+}
+
+textarea {
+    width: 100%;
+    min-height: 100px;
+    margin-bottom: 10px;
+}
