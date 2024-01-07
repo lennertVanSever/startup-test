@@ -26,22 +26,18 @@ def submit():
         messages.append({"role": "user", "content": input_text})
 
     try:
-        print("here")
-        response = client.chat.completions.create(
+        chat_response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=messages
         )
-        print(response)
-        # Accessing the content of the last message in the response
-        # summary = response['choices'][0]['message']['content']
+        # Extract the content from the last message in the response
+        summary = chat_response.choices[-1].message.content
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"error": "Failed to generate response from OpenAI."})
 
     # Constructing the response data
-    # print(summary)
-    data = {"test": "this is a test"}
-    # data = {f"input{index+1}": summary for index, _ in enumerate(messages[1:])}
+    data = {f"input{index+1}": summary for index, _ in enumerate(messages[1:])}
 
     # Return the summarized data in JSON format
     return jsonify(data)
