@@ -3,7 +3,6 @@
 
 <head>
     <title>Large Input Form</title>
-    <!-- Include HTMX -->
     <script src="https://unpkg.com/htmx.org"></script>
     <style>
         textarea {
@@ -16,17 +15,13 @@
 
 <body>
     <h2>Large Input Form</h2>
-    <form hx-post="your-server-endpoint" hx-target="#response">
+    <form action="/submit" method="post">
         <textarea id="input1" name="input1"></textarea><br>
         <textarea id="input2" name="input2"></textarea><br>
         <textarea id="input3" name="input3"></textarea><br>
         <textarea id="input4" name="input4"></textarea><br>
         <input type="submit" value="Submit">
     </form>
-
-    <div id="response">
-        <!-- Response will be loaded here -->
-    </div>
 </body>
 
 </html>
