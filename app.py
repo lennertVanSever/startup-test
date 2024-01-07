@@ -19,27 +19,42 @@ def index():
 
 @app.route('/submit', methods=['POST'])
 def submit():
-    # Constructing the chat messages for each input
-    messages = [{"role": "system", "content": "You are a helpful assistant."}]
-    for key in request.form:
+    # Constructing the system message for the prompt
+    system_message = "Provide a one-word summary for each of the following inputs in the format 'input [number]: [summary]'."
+    messages = [{"role": "system", "content": system_message}]
+
+    # Adding user messages for each input
+    for key in sorted(request.form):
         input_text = request.form[key]
-        messages.append({"role": "user", "content": input_text})
+        messages.append(
+            {"role": "user", "content": f"input {key[-1]}: {input_text}"})
 
     try:
         chat_response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=messages
         )
-        # Extract the content from the last message in the response
-        summary = chat_response.choices[-1].message.content
+        # Extract responses for each input
+        responses = [
+            msg.message.content for msg in chat_response.choices if msg.message.role == "assistant"]
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"error": "Failed to generate response from OpenAI."})
 
-    # Constructing the response data
-    data = {f"input{index+1}": summary for index, _ in enumerate(messages[1:])}
+    # Parsing the structured responses
+        # "input 1: first\ninput 2: second\ninput 3: third\ninput 4: fourth"
+    response_text = responses[0]
+    summary_lines = response_text.split("\n")
 
-    # Return the summarized data in JSON format
+    data = {}
+    for line in summary_lines:
+        parts = line.split(":")
+        if len(parts) == 2:
+            key = parts[0].strip()  # e.g., "input 1"
+            value = parts[1].strip()  # e.g., "first"
+            data[key] = value
+
+    # Return the parsed data in JSON format
     return jsonify(data)
 
 
