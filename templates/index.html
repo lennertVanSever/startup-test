@@ -3,25 +3,56 @@
 
 <head>
     <title>Large Input Form</title>
-    <script src="https://unpkg.com/htmx.org"></script>
     <style>
-        textarea {
-            width: 100%;
-            min-height: 100px;
+        .textarea-container {
+            display: flex;
             margin-bottom: 10px;
+        }
+
+        .textarea-large {
+            width: 60%;
+            min-height: 100px;
+            margin-right: 10px;
+        }
+
+        .textarea-small {
+            width: 40%;
+            min-height: 100px;
         }
     </style>
 </head>
 
 <body>
     <h2>Large Input Form</h2>
-    <form action="/submit" method="post">
-        <textarea id="input1" name="input1"></textarea><br>
-        <textarea id="input2" name="input2"></textarea><br>
-        <textarea id="input3" name="input3"></textarea><br>
-        <textarea id="input4" name="input4"></textarea><br>
+    <form action="/submit" method="post" id="formContainer">
         <input type="submit" value="Submit">
     </form>
+
+    <script>
+        function htmlToElement(html) {
+            const template = document.createElement('template');
+            html = html.trim();
+            template.innerHTML = html;
+            return template.content.firstChild;
+        }
+
+        function createTextareaPair(id) {
+            return htmlToElement(`
+                <div class="textarea-container">
+                    <textarea id="${id}1" name="${id}1" class="textarea-large"></textarea>
+                    <textarea id="${id}2" name="${id}2" class="textarea-small"></textarea>
+                </div>
+            `);
+        }
+
+        window.onload = function () {
+            const formContainer = document.getElementById('formContainer');
+            for (let i = 1; i <= 4; i++) {
+                const textareaPair = createTextareaPair('input' + i);
+                formContainer.insertBefore(textareaPair, formContainer.lastElementChild);
+            }
+        }
+    </script>
 </body>
 
 </html>
