@@ -20,7 +20,7 @@ def index():
 @app.route('/submit', methods=['POST'])
 def submit():
     # Constructing the system message for the prompt
-    system_message = "Provide a one-word summary for each of the following inputs in the format 'input [number]: [summary]'."
+    system_message = "Provide a summary for each of the following inputs in the format 'input [number]: [summary]'."
     messages = [{"role": "system", "content": system_message}]
 
     # Adding user messages for each input
@@ -50,7 +50,8 @@ def submit():
     for line in summary_lines:
         parts = line.split(":")
         if len(parts) == 2:
-            key = parts[0].strip()  # e.g., "input 1"
+            # Removes spaces, e.g., "input1"
+            key = parts[0].replace(" ", "").strip()
             value = parts[1].strip()  # e.g., "first"
             data[key] = value
 
