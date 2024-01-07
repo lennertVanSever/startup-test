@@ -28,7 +28,7 @@
 </head>
 
 <body>
-    <h2>Large Input Form</h2>
+    <h2>Patent Startup test</h2>
     <div class="container">
         <form action="/submit" method="post" id="formContainer">
             <input type="submit" value="Submit">
@@ -44,8 +44,21 @@
             return template.content.firstChild;
         }
 
-        function createTextarea(id, className) {
-            return htmlToElement(`<textarea id="${id}" name="${id}" class="${className}"></textarea>`);
+        function createTextareaPair(index) {
+            const largeTextareaId = `input${index}1`;
+            const smallTextareaId = `input${index}2`;
+
+            const container = htmlToElement(`
+                <div class="textarea-container">
+                    <textarea id="${largeTextareaId}" name="${largeTextareaId}" class="textarea-large"></textarea>
+                    <textarea id="${smallTextareaId}" name="${smallTextareaId}" class="textarea-small"></textarea>
+                </div>
+            `);
+
+            return {
+                largeTextarea: container.children[0],
+                smallTextarea: container.children[1]
+            };
         }
 
         window.onload = function () {
@@ -53,15 +66,10 @@
             const summaryContainer = document.getElementById('summaryContainer');
 
             for (let i = 1; i <= 4; i++) {
-                const textareaLarge = createTextarea('input' + i + '1', 'textarea-large');
-                const textareaSmall = createTextarea('input' + i + '2', 'textarea-small');
+                const { largeTextarea, smallTextarea } = createTextareaPair(i);
 
-                const container = document.createElement('div');
-                container.className = 'textarea-container';
-                container.appendChild(textareaLarge);
-                formContainer.insertBefore(container, formContainer.lastElementChild);
-
-                summaryContainer.appendChild(textareaSmall);
+                formContainer.insertBefore(largeTextarea, formContainer.lastElementChild);
+                summaryContainer.appendChild(smallTextarea);
             }
         }
     </script>
