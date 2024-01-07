@@ -3,12 +3,14 @@ body {
     background-color: #f4f4f4;
     padding: 20px;
     color: #333;
+    margin: 0;
 }
 
 .container {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
     padding: 20px;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -18,16 +20,9 @@ body {
 
 form,
 #summaryContainer {
+    width: 100%;
     border-radius: 8px;
-}
-
-form {
-    margin-right: 15px;
-    max-width: calc(60% - 10px);
-}
-
-#summaryContainer {
-    max-width: calc(40% - 20px);
+    margin-bottom: 15px;
 }
 
 textarea {
@@ -53,4 +48,25 @@ input[type="button"] {
 
 input[type="button"]:hover {
     background-color: #004494;
+}
+
+/* Media query for screens wider than 768px */
+@media (min-width: 768px) {
+    .container {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    form,
+    #summaryContainer {
+        margin-bottom: 0;
+    }
+
+    form {
+        max-width: calc(60% - 10px);
+    }
+
+    #summaryContainer {
+        max-width: calc(40% - 20px);
+    }
 }
