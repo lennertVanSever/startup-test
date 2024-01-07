@@ -31,7 +31,7 @@
     <h2>Patent Startup test</h2>
     <div class="container">
         <form action="/submit" method="post" id="formContainer">
-            <input type="submit" value="Submit">
+            <input type="button" value="Submit" onclick="submitForm()">
         </form>
         <div id="summaryContainer"></div>
     </div>
@@ -44,21 +44,8 @@
             return template.content.firstChild;
         }
 
-        function createTextareaPair(index) {
-            const largeTextareaId = `input${index}1`;
-            const smallTextareaId = `input${index}2`;
-
-            const container = htmlToElement(`
-                <div class="textarea-container">
-                    <textarea id="${largeTextareaId}" name="${largeTextareaId}" class="textarea-large"></textarea>
-                    <textarea id="${smallTextareaId}" name="${smallTextareaId}" class="textarea-small"></textarea>
-                </div>
-            `);
-
-            return {
-                largeTextarea: container.children[0],
-                smallTextarea: container.children[1]
-            };
+        function createTextarea(id, className) {
+            return htmlToElement(`<textarea id="${id}" name="${id}" class="${className}"></textarea>`);
         }
 
         window.onload = function () {
@@ -66,13 +53,39 @@
             const summaryContainer = document.getElementById('summaryContainer');
 
             for (let i = 1; i <= 4; i++) {
-                const { largeTextarea, smallTextarea } = createTextareaPair(i);
+                // Create and append textareas for input
+                const textareaInput = createTextarea('input' + i + '1', 'textarea-large');
+                formContainer.prepend(textareaInput);
 
-                formContainer.insertBefore(largeTextarea, formContainer.lastElementChild);
-                summaryContainer.appendChild(smallTextarea);
+                // Create and append textareas for summary
+                const textareaSummary = createTextarea('summary' + i, 'textarea-small');
+                summaryContainer.append(textareaSummary);
             }
         }
+
+        function submitForm() {
+            // Gather data from the form
+            const formData = new FormData();
+            for (let i = 1; i <= 4; i++) {
+                formData.append('input' + i, document.getElementById('input' + i + '1').value);
+            }
+
+            // AJAX request to the Flask backend
+            fetch('/submit', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Update the summary textareas
+                    for (let i = 1; i <= 4; i++) {
+                        document.getElementById('summary' + i).value = data['input' + i];
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
     </script>
+
 </body>
 
 </html>
